@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>필복 — 가설2 인터랙티브 프로토타입</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(120% 90% at 50% 0%, #14305f 0%, #0a1424 55%, #070b14 100%);
+      font-family: var(--font-family-base, -apple-system, BlinkMacSystemFont, sans-serif);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .proto-root {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 28px 16px 56px;
+      gap: 22px;
+    }
+
+    /* ── header / flow rail ───────────────────────────────── */
+    .proto-head {
+      width: 100%;
+      max-width: 720px;
+      color: #fff;
+      text-align: center;
+    }
+    .proto-brand {
+      font-family: var(--font-family-brand, inherit);
+      font-weight: 800;
+      font-size: 26px;
+      letter-spacing: -0.03em;
+    }
+    .proto-brand span {
+      font-size: 14px;
+      font-weight: 600;
+      color: rgba(255,255,255,.55);
+      letter-spacing: 0;
+    }
+    .proto-sub {
+      font-size: 13px;
+      color: rgba(255,255,255,.62);
+      margin-top: 6px;
+      line-height: 1.5;
+    }
+
+    .proto-rail {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 18px;
+    }
+    .rail-step {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 13px 7px 8px;
+      border-radius: 9999px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.05);
+      color: rgba(255,255,255,.62);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .18s ease, color .18s ease, border-color .18s ease;
+    }
+    .rail-step:hover { background: rgba(255,255,255,.1); color: #fff; }
+    .rail-step .rail-dot {
+      width: 20px; height: 20px;
+      border-radius: 9999px;
+      display: grid; place-items: center;
+      background: rgba(255,255,255,.12);
+      font-size: 11px; font-weight: 800;
+      color: rgba(255,255,255,.7);
+    }
+    .rail-step.done { color: rgba(255,255,255,.85); border-color: rgba(0,189,222,.4); }
+    .rail-step.done .rail-dot { background: rgba(0,189,222,.28); color: #aef0ff; }
+    .rail-step.active {
+      background: linear-gradient(135deg, #005EEB, #00BDDE);
+      color: #fff;
+      border-color: transparent;
+      box-shadow: 0 6px 18px rgba(0,94,235,.45);
+    }
+    .rail-step.active .rail-dot { background: rgba(255,255,255,.28); color: #fff; }
+
+    .proto-controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    .sim-chip {
+      padding: 8px 14px;
+      border-radius: 9999px;
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.07);
+      color: #fff;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform .12s ease, background .18s ease;
+    }
+    .sim-chip:hover { background: rgba(255,255,255,.14); }
+    .sim-chip:active { transform: scale(.96); }
+    .sim-chip.warn { border-color: rgba(255,99,99,.4); color: #ffd5d5; }
+    .sim-chip.warn:hover { background: rgba(255,66,66,.18); }
+    .sim-chip.ghost { color: rgba(255,255,255,.6); }
+
+    /* ── device frame ─────────────────────────────────────── */
+    .proto-stage {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+    }
+    .proto-phone {
+      position: relative;
+      width: 375px;
+      height: 812px;
+      border-radius: 46px;
+      background: #0A0A0B;
+      padding: 6px;
+      box-shadow:
+        0 0 0 2px rgba(255,255,255,.06),
+        0 30px 70px -20px rgba(0,0,0,.7);
+      overflow: hidden;
+    }
+    .proto-phone .phone {
+      border-radius: 40px;
+      overflow: hidden;
+    }
+    /* interactive prototype: let tall screens scroll inside the device */
+    .proto-stage .screen-body { overflow-y: auto; -webkit-overflow-scrolling: touch; }
+
+    .scr-anim { width: 100%; height: 100%; }
+    .scr-anim.fwd  { animation: scr-in-fwd .32s cubic-bezier(0.16,1,0.3,1) both; }
+    .scr-anim.back { animation: scr-in-back .3s cubic-bezier(0.16,1,0.3,1) both; }
+    @keyframes scr-in-fwd {
+      from { opacity: 0; transform: translateX(26px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes scr-in-back {
+      from { opacity: 0; transform: translateX(-22px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .scr-anim.fwd, .scr-anim.back { animation: none; }
+    }
+
+    /* ── toast ────────────────────────────────────────────── */
+    .proto-toast {
+      position: absolute;
+      left: 50%;
+      bottom: 108px;
+      transform: translateX(-50%);
+      max-width: 300px;
+      padding: 12px 18px;
+      background: rgba(10,10,11,.92);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 9999px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.4);
+      backdrop-filter: blur(8px);
+      z-index: 50;
+      animation: toast-in .26s cubic-bezier(0.16,1,0.3,1) both;
+      white-space: nowrap;
+    }
+    @keyframes toast-in {
+      from { opacity: 0; transform: translate(-50%, 12px); }
+      to   { opacity: 1; transform: translate(-50%, 0); }
+    }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+  <script type="text/babel" src="components.jsx"></script>
+  <script type="text/babel" src="screens-h2.jsx"></script>
+  <script type="text/babel" src="app-h2.jsx"></script>
+</body>
+</html>

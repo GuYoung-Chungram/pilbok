@@ -1,0 +1,585 @@
+@import url("design-tokens-inline.css");
+
+/* ============================================================
+   필복 prototype — base styles
+   Two distinct visual registers:
+     .senior — extra-large type, single-button bias, dark mode tolerant
+     .caregiver — compact mobile UI, KakaoTalk-adjacent feel
+   ============================================================ */
+
+* { box-sizing: border-box; }
+
+.phone {
+  width: 375px;
+  height: 812px;
+  background: var(--color-static-white);
+  position: relative;
+  overflow: hidden;
+  font-family: var(--font-family-base);
+  color: var(--color-label-strong);
+  display: flex;
+  flex-direction: column;
+}
+
+.phone-dark {
+  background: #0A0A0B;
+  color: #F7F7F8;
+}
+
+/* iOS-style status bar */
+.statusbar {
+  height: 44px;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 22px;
+  font-family: var(--font-family-base);
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--color-label-strong);
+  letter-spacing: -0.02em;
+}
+.phone-dark .statusbar { color: #F7F7F8; }
+.statusbar .right { display: flex; align-items: center; gap: 6px; }
+.statusbar .signal,
+.statusbar .wifi,
+.statusbar .battery { display: inline-flex; }
+.statusbar svg { display: block; }
+
+/* home indicator */
+.home-indicator {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 134px;
+  height: 5px;
+  background: var(--color-label-strong);
+  border-radius: 9999px;
+  opacity: 0.9;
+}
+.phone-dark .home-indicator { background: #F7F7F8; }
+
+/* phone notch */
+.notch {
+  position: absolute;
+  top: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 156px; height: 32px;
+  background: #0A0A0B;
+  border-radius: 0 0 18px 18px;
+  z-index: 20;
+}
+
+/* generic screen body */
+.screen-body { flex: 1 1 auto; overflow: hidden; position: relative; }
+
+/* ============================================================
+   SENIOR mode — for 부모님(시니어) screens
+   ============================================================ */
+.senior {
+  --senior-body: 22px;
+  --senior-strong: 26px;
+  --senior-display: 44px;
+  --senior-pill-name: 32px;
+}
+.senior .screen-body {
+  padding: 24px 24px 100px;
+  font-size: var(--senior-body);
+  line-height: 1.45;
+  letter-spacing: -0.01em;
+}
+.senior .eyebrow {
+  font-size: 18px;
+  color: var(--color-label-alternative);
+  font-weight: 500;
+}
+.senior h1 {
+  font-size: var(--senior-display);
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+  font-weight: 800;
+  margin: 0;
+  color: var(--color-label-strong);
+}
+.senior h2 {
+  font-size: var(--senior-strong);
+  line-height: 1.3;
+  font-weight: 700;
+  margin: 0;
+  color: var(--color-label-strong);
+}
+.senior .primary-btn {
+  width: 100%;
+  height: 88px;
+  border-radius: 22px;
+  border: none;
+  background: var(--color-primary-normal);
+  color: #fff;
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(0, 94, 235, 0.28);
+}
+.senior .primary-btn .icon { width: 32px; height: 32px; }
+.senior .secondary-btn {
+  width: 100%;
+  height: 64px;
+  border-radius: 18px;
+  border: 2px solid var(--color-line-strong);
+  background: #fff;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--color-label-strong);
+  letter-spacing: -0.01em;
+  cursor: pointer;
+}
+.senior .btn-bar {
+  position: absolute;
+  bottom: 36px; left: 24px; right: 24px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+
+/* iconographic pill / capsule for medicine */
+.pill-shape {
+  width: 120px; height: 64px;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+.pill-shape::after {
+  content: "";
+  position: absolute;
+  top: 0; bottom: 0;
+  left: 50%;
+  width: 2px;
+  background: rgba(0,0,0,.18);
+}
+.pill-shape.blood { background: linear-gradient(90deg, #FFB5B5 0 50%, #FED5D5 50% 100%); }
+.pill-shape.sugar { background: linear-gradient(90deg, #FED49C 0 50%, #FEE6C6 50% 100%); }
+.pill-shape.heart { background: linear-gradient(90deg, #69A5FF 0 50%, #9EC5FF 50% 100%); }
+.pill-shape.calc  { background: linear-gradient(90deg, #ACFCC7 0 50%, #D9FFE6 50% 100%); }
+
+/* capsule pill */
+.cap-shape {
+  width: 120px; height: 64px;
+  border-radius: 9999px;
+  display: flex;
+  align-items: stretch;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.cap-shape > span { flex: 1; }
+.cap-shape.blue > span:first-child { background: #4F95FF; }
+.cap-shape.blue > span:last-child  { background: #DBDCDF; }
+.cap-shape.red > span:first-child  { background: #FF6363; }
+.cap-shape.red > span:last-child   { background: #FED5D5; }
+
+/* round tablet */
+.tab-shape {
+  width: 80px; height: 80px;
+  border-radius: 9999px;
+  position: relative;
+  flex-shrink: 0;
+}
+.tab-shape::after {
+  content: ""; position: absolute;
+  top: 50%; left: 12%; right: 12%; height: 2px;
+  background: rgba(0,0,0,.15);
+}
+.tab-shape.white { background: #F4F4F5; border: 2px solid #DBDCDF; }
+.tab-shape.yellow { background: #FFD49C; border: 2px solid #FF9200; }
+
+/* ============================================================
+   CAREGIVER mode — for 자녀(보호자) screens
+   ============================================================ */
+.caregiver { font-family: var(--font-family-base); }
+.caregiver .screen-body {
+  padding: 16px 16px 100px;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: -0.005em;
+}
+
+/* card */
+.card {
+  background: #fff;
+  border-radius: 18px;
+  padding: 16px;
+  border: 1px solid var(--color-line-normal);
+}
+
+.app-bar {
+  height: 56px;
+  flex: 0 0 auto;
+  display: flex; align-items: center;
+  padding: 0 16px;
+  gap: 12px;
+  background: #fff;
+}
+.app-bar .title { font-size: 18px; font-weight: 700; letter-spacing: -0.015em; }
+.app-bar .back-btn {
+  width: 36px; height: 36px;
+  display: grid; place-items: center;
+  background: transparent; border: none; cursor: pointer; color: var(--color-label-strong);
+  margin-left: -8px;
+}
+
+/* tab bar at bottom */
+.tab-bar {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 88px;
+  background: #fff;
+  border-top: 1px solid var(--color-line-normal);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  padding-bottom: 20px;
+}
+.tab-bar .item {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 4px;
+  color: var(--color-label-alternative);
+  font-size: 11px;
+  font-weight: 500;
+}
+.tab-bar .item.active { color: var(--color-primary-normal); }
+.tab-bar .item svg { width: 22px; height: 22px; }
+
+/* Kakao-style elements */
+.kakao-bg { background: #ABC1D1; }
+.kakao-bubble {
+  background: #FFEB33;
+  color: #181818;
+  padding: 10px 12px;
+  border-radius: 16px 4px 16px 16px;
+  font-size: 14px;
+  line-height: 1.4;
+  max-width: 240px;
+  word-break: keep-all;
+}
+.kakao-bubble.them {
+  background: #fff;
+  border-radius: 4px 16px 16px 16px;
+}
+.kakao-row { display: flex; gap: 8px; align-items: flex-end; margin-bottom: 8px; }
+.kakao-row.me { justify-content: flex-end; }
+.kakao-time { font-size: 10px; color: rgba(0,0,0,.4); }
+.kakao-avatar {
+  width: 40px; height: 40px; border-radius: 12px;
+  background: linear-gradient(135deg, #6541F2, #CB59FF);
+  color: #fff; display: grid; place-items: center;
+  font-weight: 700; font-size: 16px;
+  flex-shrink: 0;
+}
+.kakao-avatar.mom { background: linear-gradient(135deg, #FF9200, #FFC06E); }
+.kakao-avatar.bot { background: linear-gradient(135deg, #005EEB, #4F95FF); }
+
+/* push notification (iOS lockscreen style) */
+.push-notif {
+  margin: 0 12px 8px;
+  background: rgba(245, 245, 248, 0.96);
+  border-radius: 18px;
+  padding: 12px 14px;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  backdrop-filter: blur(20px);
+  color: #0A0A0B;
+}
+.push-notif .app-icon {
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  flex-shrink: 0;
+  display: grid; place-items: center;
+  color: #fff; font-weight: 800;
+  font-family: var(--font-family-brand);
+  font-size: 18px;
+  letter-spacing: -0.04em;
+}
+.push-notif .app-icon.pilbok { background: linear-gradient(135deg, #005EEB, #00BDDE); }
+.push-notif .app-icon.kakao { background: #FFEB33; color: #181818; }
+.push-notif .meta {
+  font-size: 12px; opacity: .6;
+}
+.push-notif .title { font-size: 14px; font-weight: 700; margin: 1px 0 1px; }
+.push-notif .body { font-size: 14px; line-height: 1.35; }
+
+/* ============================================================
+   Pilbok logo / brand badges
+   ============================================================ */
+.brand-mark {
+  font-family: var(--font-family-brand);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+}
+.app-icon-lg {
+  width: 64px; height: 64px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #005EEB, #00BDDE);
+  color: #fff;
+  display: grid; place-items: center;
+  font-family: var(--font-family-brand);
+  font-weight: 800;
+  font-size: 28px;
+  letter-spacing: -0.04em;
+  box-shadow: 0 6px 20px rgba(0,94,235,.25);
+}
+
+/* status chips */
+.chip {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.chip.positive { background: #D9FFE6; color: #006E25; }
+.chip.cautionary { background: #FEE6C6; color: #9C5800; }
+.chip.negative { background: #FED5D5; color: #B20C0C; }
+.chip.neutral { background: #F4F4F5; color: var(--color-label-alternative); }
+
+/* ============================================================
+   Section heading inside design canvas
+   ============================================================ */
+.intro-card {
+  width: 720px;
+  background: #fff;
+  border-radius: 24px;
+  padding: 32px;
+  border: 1px solid var(--color-line-normal);
+  font-family: var(--font-family-base);
+  color: var(--color-label-strong);
+}
+.intro-card h1 {
+  font-size: 36px;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  margin: 0 0 8px;
+}
+.intro-card .lede {
+  font-size: 16px;
+  color: var(--color-label-neutral);
+  line-height: 1.6;
+  margin: 0 0 24px;
+}
+.intro-card .hyp-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 14px;
+  margin: 0;
+}
+.intro-card .hyp {
+  padding: 18px;
+  background: var(--color-background-normal);
+  border-radius: 16px;
+  border: 1px solid var(--color-line-normal);
+}
+.intro-card .hyp .tag {
+  font-family: var(--font-family-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--color-primary-normal);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.intro-card .hyp .name {
+  font-size: 14px;
+  font-weight: 700;
+  margin: 6px 0;
+}
+.intro-card .hyp p {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--color-label-neutral);
+}
+
+/* checkbox circle for senior screens */
+.big-check {
+  width: 48px; height: 48px;
+  border-radius: 9999px;
+  border: 3px solid var(--color-line-strong);
+  display: grid; place-items: center;
+  flex-shrink: 0;
+}
+.big-check.done {
+  background: var(--color-status-positive);
+  border-color: var(--color-status-positive);
+  color: #fff;
+}
+.big-check svg { width: 24px; height: 24px; }
+
+/* calendar grid */
+.cal-week {
+  display: grid;
+  grid-template-columns: 88px repeat(7, 1fr);
+  gap: 6px;
+  font-size: 13px;
+}
+.cal-week .head {
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700;
+  font-size: 12px;
+  color: var(--color-label-alternative);
+  height: 28px;
+}
+.cal-week .head.today { color: var(--color-primary-normal); }
+.cal-week .row-label {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-label-strong);
+}
+.cal-week .cell {
+  height: 44px;
+  border-radius: 10px;
+  background: var(--color-background-normal);
+  display: grid; place-items: center;
+  color: var(--color-label-assistive);
+  font-size: 14px;
+  font-weight: 700;
+}
+.cal-week .cell.done {
+  background: var(--color-status-positive);
+  color: #fff;
+}
+.cal-week .cell.miss {
+  background: #FED5D5;
+  color: #B20C0C;
+}
+.cal-week .cell.future {
+  background: transparent;
+  border: 1px dashed var(--color-line-strong);
+  color: var(--color-label-disable);
+}
+.cal-week .cell.now {
+  background: #fff;
+  border: 2px solid var(--color-primary-normal);
+  color: var(--color-primary-normal);
+}
+
+/* month grid */
+.cal-month {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+.cal-month .mhead {
+  font-size: 11px;
+  color: var(--color-label-alternative);
+  text-align: center;
+  font-weight: 700;
+  padding-bottom: 6px;
+}
+.cal-month .mcell {
+  aspect-ratio: 1;
+  border-radius: 8px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  position: relative;
+  background: var(--color-background-normal);
+}
+.cal-month .mcell .dot {
+  position: absolute;
+  bottom: 4px; left: 50%;
+  transform: translateX(-50%);
+  width: 18px; height: 4px; border-radius: 2px;
+}
+.cal-month .mcell.done { background: #D9FFE6; color: #006E25; }
+.cal-month .mcell.done .dot { background: #00BF40; }
+.cal-month .mcell.partial { background: #FEE6C6; color: #9C5800; }
+.cal-month .mcell.partial .dot { background: #FF9200; }
+.cal-month .mcell.miss { background: #FED5D5; color: #B20C0C; }
+.cal-month .mcell.miss .dot { background: #FF4242; }
+.cal-month .mcell.empty { color: var(--color-label-assistive); }
+.cal-month .mcell.today {
+  outline: 2px solid var(--color-primary-normal);
+  outline-offset: -2px;
+}
+
+/* PDF preview document */
+.pdf-paper {
+  background: #fff;
+  border-radius: 4px;
+  padding: 28px 28px 36px;
+  box-shadow: 0 1px 0 var(--color-line-normal), 0 8px 24px rgba(0,0,0,.06);
+  font-family: var(--font-family-base);
+  color: #111;
+}
+.pdf-paper .pdf-head {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  padding-bottom: 10px; border-bottom: 2px solid #111;
+  margin-bottom: 14px;
+}
+.pdf-paper .pdf-title {
+  font-size: 18px; font-weight: 800; letter-spacing: -0.02em;
+}
+.pdf-paper .pdf-sub { font-size: 10px; color: rgba(0,0,0,.55); }
+.pdf-paper table { width: 100%; border-collapse: collapse; font-size: 10px; }
+.pdf-paper th, .pdf-paper td {
+  padding: 5px 4px; text-align: left; border-bottom: 1px solid rgba(0,0,0,.12);
+}
+.pdf-paper th { font-weight: 700; background: #F4F4F5; }
+
+/* misc */
+.row { display: flex; align-items: center; }
+.gap-8 { gap: 8px; } .gap-12 { gap: 12px; } .gap-16 { gap: 16px; }
+.col { display: flex; flex-direction: column; }
+.mb-8 { margin-bottom: 8px; } .mb-12 { margin-bottom: 12px; }
+.mb-16 { margin-bottom: 16px; } .mb-24 { margin-bottom: 24px; }
+.mb-32 { margin-bottom: 32px; }
+.spacer { flex: 1; }
+.muted { color: var(--color-label-alternative); }
+
+/* shake animation for urgent alert */
+@keyframes pulse-red {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 66, 66, 0.5); }
+  50% { box-shadow: 0 0 0 12px rgba(255, 66, 66, 0); }
+}
+.urgent-pulse { animation: pulse-red 1.4s ease-in-out infinite; }
+
+/* lock screen background gradient */
+.lockscreen-bg {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(120% 80% at 50% 0%, #2a2a35 0%, #0b0b0e 60%),
+    #0b0b0e;
+}
+.lockscreen-bg.night {
+  background:
+    radial-gradient(120% 80% at 50% 0%, #0e1830 0%, #050507 65%),
+    #050507;
+}
+.lockscreen-time {
+  position: absolute; top: 70px; left: 0; right: 0;
+  text-align: center;
+  color: #fff;
+  font-family: var(--font-family-brand);
+}
+.lockscreen-time .time {
+  font-size: 84px;
+  font-weight: 300;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+.lockscreen-time .date {
+  font-size: 17px;
+  font-weight: 500;
+  opacity: 0.88;
+  letter-spacing: -0.01em;
+  margin-bottom: 2px;
+}
